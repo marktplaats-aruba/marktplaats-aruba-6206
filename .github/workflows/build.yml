@@ -1,0 +1,78 @@
+name: Build Mobile App
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Select platform to test'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - ios
+          - android
+          - both
+      android_type:
+        description: 'Android build type'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - aab
+          - apk
+          - both
+      ios_type:
+        description: 'iOS build type'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - bundle
+          - simulator
+          - both
+      deploy_action:
+        description: 'Deployment action'
+        required: false
+        default: 'build-only'
+        type: choice
+        options:
+          - build-only
+          - build-deploy
+
+      build_id:
+        description: 'Internal build ID'
+        required: true
+        type: string
+      node_version:
+        description: 'Node.js version'
+        required: false
+        default: '24.11'
+      java_version:
+        description: 'Java version'
+        required: false
+        default: '17'
+      ruby_version:
+        description: 'Ruby version'
+        required: false
+        default: '3.3'
+      api_url:
+        description: 'API URL'
+        required: true
+
+
+jobs:
+  mobile-builds:
+    name: Mobile Builds
+    uses: appnatively/workflows/.github/workflows/action.yml@master
+    secrets:
+      BUILD_ACCESS_TOKEN: ${{ secrets.BUILD_ACCESS_TOKEN }}
+    with:
+      build_id: ${{ github.event.inputs.build_id }}
+      platform: ${{ github.event.inputs.platform }}
+      android_type: ${{ github.event.inputs.android_type }}
+      ios_type: ${{ github.event.inputs.ios_type }}
+      deploy_action: ${{ github.event.inputs.deploy_action }}
+      node_version: ${{ github.event.inputs.node_version }}
+      java_version: ${{ github.event.inputs.java_version }}
+      ruby_version: ${{ github.event.inputs.ruby_version }}
+      api_url: ${{ github.event.inputs.api_url }}
